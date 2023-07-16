@@ -9,18 +9,16 @@ export const sort = (items:Array<ComicRankItem>,filterCondition:Array<OptionType
   return filteredItems
 }
 
-const convertKoreanDay = (day:Period) => {
-  switch(day){
-    case "MON" : return "월요일"
-    case "TUE" : return "화요일"
-    case "WED" : return "수요일"
-    case "THU" : return "목요일"
-    case "FRI" : return "금요일"
-    case "SAT" : return "토요일"
-    case "SUN" : return "일요일"
-  }
+const convertKoreanDay = {
+  MON: "월요일",
+  TUE: "화요일",
+  WED: "수요일",
+  THU: "목요일",
+  FRI: "금요일",
+  SAT: "토요일",
+  SUN: "일요일"
 }
 
 export const convertPeriod = (period:Period[]) => {
-  return `매주 ${period.map(item => convertKoreanDay(item)).join(', ')} 연재`
+  return `매주 ${period.map(item => convertKoreanDay[item]).join(' · ')} 연재`
 }

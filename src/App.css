@@ -73,5 +73,11 @@
 .combo-container {
   display: flex;
   flex-direction: row-reverse;
-  
+}
+
+.title-container {
+  max-width: 320;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
