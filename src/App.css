@@ -43,7 +43,7 @@
 .ranking-container{
   padding: 30px;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
 }
 
 .card-container{
@@ -55,11 +55,6 @@
 
 .middle{
   margin: 0 auto;
-}
-
-.rank-text {
-  font-size: 18px;
-  padding-right: 10px;
 }
 
 .blue {
@@ -80,4 +75,18 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.rank {
+  display: inline-block;
+  font-size: 3em;
+  line-height: 0;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+.rank-text {
+  font-size: 18px;
+  vertical-align: super;
+  margin-right: 3px;
 }

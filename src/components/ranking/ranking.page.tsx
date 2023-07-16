@@ -9,41 +9,74 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import React from "react";
-import { Navigate, useSearchParams } from 'react-router-dom';
-import romance from '../../assets/response_mock/romance/page_1.json';
+import { useInView } from "react-intersection-observer";
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { getData } from './functions/ranking.data.ts';
 import { convertPeriod, sort } from './functions/ranking.function.ts';
 import { MultiSelectComboBox } from './ranking.comboBox.tsx';
-import { defaultData } from './ranking.contants.ts';
 import { ComicRankItem } from './ranking.type';
 
 export const Ranking = (): React.ReactElement => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const genre = searchParams.get('genre')
+  const [genre,setGenre] = React.useState(searchParams.get('genre'));
+  const [ref, inView] = useInView();
+  const page = React.useRef(1);
 
-  const [comicsData, setComicsData] = React.useState(defaultData);
-  const [tabValue, setTabValue] = React.useState(0);
-
+  const [comicsData, setComicsData] = React.useState([]);
+  const [originalComicsData, setOriginalComicsData] = React.useState([]);
+  const [tabValue, setTabValue] = React.useState(genre === 'romance' ? 0 : 1);
   const [selectedFilters, setSelectedFilters] = React.useState([]);
-
+  
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    event.preventDefault();
     setTabValue(newValue);
   };
 
-  // const tt =  api.get('/api/comics/romance?page=1')
+  React.useEffect(() => {
+    const currentGenre = searchParams.get('genre')
+    page.current = 1;
+    setGenre(currentGenre)
+    setOriginalComicsData(getData(currentGenre, 1))
+  }, [searchParams])
+
+
   React.useEffect(()=>{
-    setComicsData(sort(romance.data,selectedFilters))
-  },[selectedFilters])
+    setComicsData(sort(originalComicsData,selectedFilters))
+    if(inView){
+      page.current++;
+      if(page.current<6) {
+        const data = [...originalComicsData, ...getData(genre, page.current)]
+        setOriginalComicsData(data)
+        setComicsData(sort(data,selectedFilters))
+      }
+    }
+  },[selectedFilters, inView, originalComicsData])
+
+  if(comicsData.length === 0){
+    setOriginalComicsData(getData(genre,1))
+    setComicsData(getData(genre,1))
+    return <>loading...</>
+  }
 
   return (
     <>
       <div className='ranking-container'>
         {genre!=='drama' && <Navigate to={'/ranking?genre=romance'} replace={true} />}
         <Tabs value={tabValue} onChange={handleChange} aria-label="icon label tabs example">
-          <Tab icon={<FavoriteIcon />} label="Romance" style={{outline:'none'}} href='/ranking' />
-          <Tab icon={<SportsKabaddiIcon />} label="Drama" style={{outline:'none'}} href='/ranking?genre=drama'/>
+          <Tab 
+            icon={<FavoriteIcon />} 
+            label="Romance" 
+            style={{outline:'none'}} 
+            onClick={()=> navigate('/ranking?genre=romance')} />
+          <Tab 
+            icon={<SportsKabaddiIcon />} 
+            label="Drama" 
+            style={{outline:'none'}} 
+            onClick={()=> navigate('/ranking?genre=drama')} />
+          <MultiSelectComboBox setSelectedFilters={setSelectedFilters}/>
         </Tabs>
       </div>
-      <MultiSelectComboBox setSelectedFilters={setSelectedFilters}/>
       <div className='card-container middle'>
         {comicsData.map((item, key)=>{
           return (
@@ -62,6 +95,7 @@ export const Ranking = (): React.ReactElement => {
           )
         })}
       </div>
+      <div ref={ref}>-</div>
     </>
 
   );
@@ -82,10 +116,14 @@ const MediaCard = (data:ComicRankItem) => {
       />
       <CardContent>
         <Typography gutterBottom variant="h6" component="div" style={{width:320, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}} >
+          <h1 className='rank'>{data.currentRank}</h1>
           <span className={`rank-text ${fontColor}`}>
-            {rank === 0 ? <>-</>: rank >0 ? <>{rank}<ArrowDropUpIcon/></> :<>{rank*(-1)}<ArrowDropDownIcon/></>}
-            </span>
-          {data.title}
+            {rank === 0 ? <span className='pdr5'>-</span>: rank >0 ? 
+              <>{rank}<ArrowDropUpIcon/></> 
+              :<>{rank*(-1)}<ArrowDropDownIcon/></>
+            }
+          </span>
+          <span>{data.title}</span>
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {data.artists?.

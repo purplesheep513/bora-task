@@ -42,9 +42,9 @@ export const MultiSelectComboBox = ({setSelectedFilters}) => {
             </li>
           }
         }
-        style={{ width: 300, marginRight:100 }}
+        style={{ width: 300}}
         renderInput={(params) =>(
-           <TextField {...params} label="Checkboxes" placeholder="Favorites" />
+           <TextField {...params} label="Filter" placeholder="복수 선택 가능" />
         )}
       />
     </div>
