@@ -76,11 +76,13 @@ export const Ranking = (): React.ReactElement => {
 
   return (
     <>
-      {isAtTop && <div className='scroll-top' onClick={scrollTop}>
-        <Tooltip title='위로' arrow>
-          <ArrowCircleUpIcon fontSize='inherit'/>
-        </Tooltip>
-      </div>
+      {isAtTop && (
+          <div className='scroll-top' onClick={scrollTop}>
+            <Tooltip title='위로' arrow>
+              <ArrowCircleUpIcon fontSize='inherit'/>
+            </Tooltip>
+          </div>
+        )
       }
       <div className='ranking-container'>
         {genre!=='drama' && <Navigate to={'/ranking?genre=romance'} replace={true} />}
