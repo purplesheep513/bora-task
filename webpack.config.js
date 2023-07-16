@@ -56,7 +56,7 @@ module.exports = {
     proxy: [
       {
         context: ["/api"],
-        target: "https://ccdn.lezhin.com/",
+        target: "https://ccdn.lezhin.com",
         secure: false,
         changeOrigin: true,
       },

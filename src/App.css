@@ -71,7 +71,7 @@
 }
 
 .title-container {
-  max-width: 320;
+  max-width: 300;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -79,7 +79,7 @@
 
 .rank {
   display: inline-block;
-  font-size: 3em;
+  font-size: 2em;
   line-height: 0;
   vertical-align: middle;
   margin-right: 2px;
@@ -89,4 +89,12 @@
   font-size: 18px;
   vertical-align: super;
   margin-right: 3px;
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 0;
+  right: 400px;
+  cursor: pointer;
+  font-size: 50px;
 }

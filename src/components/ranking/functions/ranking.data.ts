@@ -24,10 +24,7 @@ const variable = {
 }
 
 export const getData = (genre:string, page:number) =>{
-  try{
-    const comicsData = variable[`${genre}_${page}`]
-    return comicsData.data
-  }catch(error){
-    return { error }
-  }
+  const comicsData = variable[`${genre}_${page}`]
+  
+  return comicsData ? comicsData.data : []
 }

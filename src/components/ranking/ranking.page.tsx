@@ -12,19 +12,22 @@ import React from "react";
 import { useInView } from "react-intersection-observer";
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { getData } from './functions/ranking.data.ts';
-import { convertPeriod, sort } from './functions/ranking.function.ts';
+import { convertPeriod, scrollTop, sort } from './functions/ranking.function.ts';
 import { MultiSelectComboBox } from './ranking.comboBox.tsx';
 import { ComicRankItem } from './ranking.type';
+import { Tooltip } from '@mui/material';
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 
 export const Ranking = (): React.ReactElement => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [genre,setGenre] = React.useState(searchParams.get('genre'));
+  const [genre,setGenre] = React.useState('romance');
   const [ref, inView] = useInView();
   const page = React.useRef(1);
 
   const [comicsData, setComicsData] = React.useState([]);
   const [originalComicsData, setOriginalComicsData] = React.useState([]);
+
   const [tabValue, setTabValue] = React.useState(genre === 'romance' ? 0 : 1);
   const [selectedFilters, setSelectedFilters] = React.useState([]);
   
@@ -32,26 +35,38 @@ export const Ranking = (): React.ReactElement => {
     event.preventDefault();
     setTabValue(newValue);
   };
+  const [isAtTop, setIsAtTop] = React.useState(true);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsAtTop(window.scrollY > 1000);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   React.useEffect(() => {
     const currentGenre = searchParams.get('genre')
     page.current = 1;
-    setGenre(currentGenre)
     setOriginalComicsData(getData(currentGenre, 1))
+    setGenre(currentGenre)
   }, [searchParams])
 
 
   React.useEffect(()=>{
     setComicsData(sort(originalComicsData,selectedFilters))
+
     if(inView){
       page.current++;
-      if(page.current<6) {
+      if(page.current < 6) {
         const data = [...originalComicsData, ...getData(genre, page.current)]
         setOriginalComicsData(data)
         setComicsData(sort(data,selectedFilters))
       }
     }
-  },[selectedFilters, inView, originalComicsData])
+  },[selectedFilters, inView, genre])
 
   if(comicsData.length === 0){
     setOriginalComicsData(getData(genre,1))
@@ -61,6 +76,12 @@ export const Ranking = (): React.ReactElement => {
 
   return (
     <>
+      {isAtTop && <div className='scroll-top' onClick={scrollTop}>
+        <Tooltip title='위로' arrow>
+          <ArrowCircleUpIcon fontSize='inherit'/>
+        </Tooltip>
+      </div>
+      }
       <div className='ranking-container'>
         {genre!=='drama' && <Navigate to={'/ranking?genre=romance'} replace={true} />}
         <Tabs value={tabValue} onChange={handleChange} aria-label="icon label tabs example">
@@ -104,26 +125,35 @@ export const Ranking = (): React.ReactElement => {
 const MediaCard = (data:ComicRankItem) => {
   const rank = data.previousRank-data.currentRank
   const fontColor = rank === 0 ? '': rank > 0 ? 'blue' : 'red'
-  
   const state = data.contentsState === 
-    'completed'? '완결' : convertPeriod(data.schedule?.periods)
+    'completed' ? '완결' : convertPeriod(data.schedule?.periods)
+
   return (
-    <Card sx={{ minWidth: 350 }}>
+    <Card sx={{ minWidth: 300 }}>
       <CardMedia
-        sx={{ height: 350 }}
+        sx={{ height: 300 }}
         image={data.thumbnailSrc}
         title="green iguana"
       />
       <CardContent>
-        <Typography gutterBottom variant="h6" component="div" style={{width:320, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}} >
+        <Typography 
+          className='title-container' 
+          gutterBottom 
+          variant="h6" 
+          component="div" 
+        >
           <h1 className='rank'>{data.currentRank}</h1>
           <span className={`rank-text ${fontColor}`}>
-            {rank === 0 ? <span className='pdr5'>-</span>: rank >0 ? 
-              <>{rank}<ArrowDropUpIcon/></> 
-              :<>{rank*(-1)}<ArrowDropDownIcon/></>
+            {rank === 0 ? 
+              <span className='pdr5'>-</span> : 
+              rank > 0 ? 
+              <>{rank}<ArrowDropUpIcon/></> :
+              <>{rank*(-1)}<ArrowDropDownIcon/></>
             }
           </span>
-          <span>{data.title}</span>
+          <Tooltip title={data.title}>
+            <span>{data.title}</span>
+          </Tooltip>
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {data.artists?.

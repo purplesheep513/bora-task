@@ -51,14 +51,3 @@ export interface OptionType{
   value: string;
   overEqual?: boolean;
 }
-
-export interface IntersectionObserverInit {
-  root?: Element | Document | null;
-  rootMargin?: string;
-  threshold?: number | number[];
-}
-
-export type IntersectHandler = (
-  entry: IntersectionObserverEntry,
-  observer: IntersectionObserver
- ) => void

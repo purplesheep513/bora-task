@@ -1,11 +1,16 @@
 import { ComicRankItem, OptionType, Period } from '../ranking.type'
 
-export const sort = (items:Array<ComicRankItem>,filterCondition:Array<OptionType>) =>{
+export const sort = (
+  items: Array<ComicRankItem>, 
+  filterCondition: Array<OptionType>
+  ) =>{
   let filteredItems = [...items]
+
   filterCondition?.forEach(el => {
     filteredItems = filteredItems.
     filter(item => el.overEqual ? item[el.key]>= el.value : item[el.key] === el.value)
   })
+
   return filteredItems
 }
 
@@ -22,3 +27,8 @@ const convertKoreanDay = {
 export const convertPeriod = (period:Period[]) => {
   return `매주 ${period.map(item => convertKoreanDay[item]).join(' · ')} 연재`
 }
+
+export const scrollTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
