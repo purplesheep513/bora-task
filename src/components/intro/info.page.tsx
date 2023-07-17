@@ -54,6 +54,11 @@ export const Info = (): React.ReactElement => {
                   <MilitaryTechIcon fontSize="large" />
                 </Tooltip>
               </Link>
+              <span>
+                <h2 style={{ display: "inline-block" }}>
+                  {"<- 과제 페이지로 이동"}
+                </h2>
+              </span>
             </section>
           </div>
         </div>
