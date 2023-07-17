@@ -7,6 +7,8 @@ $ npm install
 $ npm run start
 ```
 
+또는 url 접속 : https://borayang5.web.app/
+
 # 개발환경
 
 ## 사용 툴
