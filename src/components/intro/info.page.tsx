@@ -31,6 +31,8 @@ export const Info = (): React.ReactElement => {
             <Card name={"TypeScript"} path={ts} />
             <Card name={"React"} path={react} />
             <Card name={"vite"} path={vite} />
+          </div>
+          <div className="skill_card">
             <Card name={"webpack"} path={webpack} />
             <Card name={"firebase"} path={firebase} />
           </div>

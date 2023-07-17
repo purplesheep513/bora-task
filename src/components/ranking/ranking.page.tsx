@@ -107,8 +107,10 @@ export const Ranking = (): React.ReactElement => {
             style={{ outline: "none" }}
             onClick={() => navigate("/ranking?genre=drama")}
           />
-          <MultiSelectComboBox setSelectedFilters={setSelectedFilters} />
         </Tabs>
+      </div>
+      <div className="section mgb20">
+        <MultiSelectComboBox setSelectedFilters={setSelectedFilters} />
       </div>
       <div className="card-container middle">
         {comicsData.map((item, key) => {
