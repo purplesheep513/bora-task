@@ -132,7 +132,7 @@ img {
   display: flex;
   justify-content: center;
   flex-direction: row;
-  padding-bottom: 60px;
+  padding-bottom: 10px;
   align-items: center;
   gap: 10px;
 }
@@ -160,6 +160,10 @@ img {
 
 .mgr10{
   margin-right: 10px;
+}
+
+.mgb20{
+  margin-bottom: 20px;
 }
 
 @media ( max-width: 1500px  ) {
